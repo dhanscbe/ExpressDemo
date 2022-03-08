@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-//
+//This line is added since we include req.body.name
+//This helps to read the json file from the request body
 app.use(express.json());
 
 const courses = [
