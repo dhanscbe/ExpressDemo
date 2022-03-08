@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+//
+app.use(express.json());
 
 const courses = [
 	{id: 1,	name: 'Javascript'},
@@ -22,6 +24,15 @@ app.get('/courses/:id', (req, res) => {
 	else
 	res.send(course.name);
 });
+
+app.post('/courses',(req,res) => {
+	const course = {
+		id : courses.length + 1,
+		name : req.body.name
+	};
+	courses.push(course);
+	res.send(course);
+})
 
 const port = process.env.PORT || 8082;
 app.listen(port, () =>
