@@ -35,12 +35,7 @@ app.post('/courses', (req, res) => {
 		return;
 	}*/
 
-	const schema = Joi.object({
-		name: Joi.string().min(6).required()
-	});
-	const result = schema.validate(req.body);
-	console.log(result);
-
+	const result = validateCourse(req.body);
 	if (result.error) {
 		res.status(400).send(result.error.details[0].message);
 		return;
@@ -54,6 +49,31 @@ app.post('/courses', (req, res) => {
 		res.send(courses);
 	}
 });
+
+
+app.put('/courses/:id', (req, res) => {
+	const course = courses.find(c => c.id === parseInt(req.params.id));
+	if (!course)
+		res.status(404).send('Course id does not exist');
+	const { error } = validateCourse(req.body)
+	if (error) {
+		res.status(400).send(error.details[0].message);
+		return;
+	}
+	else {
+		course.name = req.body.name;
+		res.send(course);
+	}
+});
+
+function validateCourse(name) {
+	const schema = Joi.object({
+		name: Joi.string().min(6).required()
+	});
+	const result = schema.validate(name);
+	console.log(result);
+	return result;
+}
 
 const port = process.env.PORT || 8082;
 app.listen(port, () =>
