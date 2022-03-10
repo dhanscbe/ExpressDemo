@@ -35,12 +35,13 @@ app.post('/courses', (req, res) => {
 		return;
 	}*/
 
-	const result = validateCourse(req.body);
-	if (result.error) {
-		res.status(400).send(result.error.details[0].message);
+	const {error} = validateCourse(req.body);
+	if (error) {
+		res.status(400).send(error.details[0].message);
 		return;
 	}
 	else {
+		
 		const course = {
 			id: courses.length + 1,
 			name: req.body.name
@@ -64,6 +65,16 @@ app.put('/courses/:id', (req, res) => {
 		course.name = req.body.name;
 		res.send(course);
 	}
+});
+
+app.delete('/courses/:id',(req,res)=>{
+	const course = courses.find(c => c.id === parseInt(req.params.id));
+	if(!course)
+	res.status(404).send(`Course id : ${course.id} does not exist`);
+	const index = courses.indexOf(course);
+	courses.splice(index,1);
+	res.send(course);
+	
 });
 
 function validateCourse(name) {
